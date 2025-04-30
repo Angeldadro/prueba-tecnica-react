@@ -35,9 +35,9 @@
   --font-size-xxlarge: 8rem;
   --font-size-xxlarge: 9rem;
   --font-size-xxlarge: 10rem;
-  --border-radius: 0.25rem;
-  --border-radius-small: 0.125rem;
-  --border-radius-large: 0.5rem;
+  --border-radius: 1rem;
+  --border-radius-large: 1.1rem;
+  --border-radius-extra-large: 2rem;
 }
 
 * {

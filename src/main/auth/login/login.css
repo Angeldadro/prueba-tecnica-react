@@ -2,5 +2,47 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
+    height: 100vh;
+    width: 100%;
+}
+
+.login-form {
+    width: 600px;
+    height: 100vh;
+    padding: 1rem 2rem;
+    background-color: var(--white-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px dashed var(--dark-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.login-form-fields {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-form-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
+.login-form-field label {
+    margin-bottom: 0.5rem;
+    font-size: var(--font-size-medium);
+    color: var(--dark-color);
+}
+
+.login-form-field input {
+    padding: 0.5rem;
+    border: 1px solid var(--dark-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+    color: var(--dark-color);
+    font-family: 'Onest', Helvetica, Arial, sans-serif;
 }

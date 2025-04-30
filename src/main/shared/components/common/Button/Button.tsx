@@ -2,7 +2,6 @@ import { ButtonType } from "./interfaces/ButtonType";
 import './Button.css'
 
 export default function Button({ children, onClick, type, className, disabled, theme  }: ButtonType) {
-
     const buttonThemes = {
         primary: "button-primary",
         secondary: "button-secondary",
@@ -10,7 +9,6 @@ export default function Button({ children, onClick, type, className, disabled, t
         danger: "button-danger",
         success: "button-success",
     };
-
     const themeClass = theme ? buttonThemes[theme] : buttonThemes.primary;
 
     return (

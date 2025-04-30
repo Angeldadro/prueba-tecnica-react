@@ -6,26 +6,38 @@ import Button from "../../shared/components/common/Button/Button";
 
 export default function Login() {
     return (
-        <AuthenticatedLayout>
             <div className="login-container">
-                <form>
-                    <h1>Login</h1>
-
+                <form className="login-form">
                     <div>
-                        <label htmlFor="username">Username</label>
-                        <input type="text" name="username" id="username"/>
-                    </div>
+                        <h1>Login</h1>
 
-                    <div>
-                        <label htmlFor="username">Password</label>
-                        <input type="text" name="password" id="password"/>
-                    </div>
+                        <div className="login-form-fields">
+                            <div className="login-form-field">
+                                <label htmlFor="email">Email</label>
+                                <input type="text" name="email" id="email"
+                                placeholder="email@example.com"
+                                />
+                            </div>
 
-                    <div>
-                        <Button>Sign In</Button>
+                            <div className="login-form-field">
+                                <label htmlFor="username">Password</label>
+                                <input type="text" name="password" id="password"
+                                placeholder="**********"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="register-account">
+                                    You don't have an account? <a href="/register">Register</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <Button>Sign In</Button>
+                        </div>
                     </div>
                 </form>
             </div>
-        </AuthenticatedLayout>
     )
 }
