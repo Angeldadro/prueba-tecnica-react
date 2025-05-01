@@ -1,6 +1,7 @@
 import { lazy } from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Navigate } from "react-router-dom"
+const Register = lazy(() => import("./main/auth/register/register"))
 const Login = lazy(() => import('./main/auth/login/login'))
 
 function App() {
@@ -11,10 +12,14 @@ function App() {
       Component: () => <Login />, 
     },
     {
+      path: '/register',
+      Component: () => <Register /> 
+    },
+    {
       path: '/',
       Component: () => <Navigate to="/login" replace/>,
     }
-  ])
+])
 
   return <RouterProvider router={routes} />
 }
