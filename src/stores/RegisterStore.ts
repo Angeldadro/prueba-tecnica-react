@@ -1,5 +1,5 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import { LOGIN_ATTEMPT, LOGIN_SUCCESS, LOGIN_FAILURE } from '../constants/LoginConstants';
+import { REGISTER_ATTEMPT, REGISTER_FAILURE, REGISTER_SUCCESS } from '../constants/RegisterConstants';
 import { IUserData, AppAction } from '../types/types';
 
 // @ts-ignore
@@ -11,7 +11,7 @@ let _userData: IUserData | null = null;
 type ChangeListenerCallback = () => void;
 let _listeners: ChangeListenerCallback[] = [];
 
-type TypesLoginStore = { 
+type TypesRegisterStore = { 
     isLoading(): boolean; 
     getError(): string | null; 
     getUserData(): IUserData | null;
@@ -22,7 +22,7 @@ type TypesLoginStore = {
     dispatchToken?: string;
 }
 
-const LoginStore: TypesLoginStore = {
+const RegisterStore: TypesRegisterStore = {
   isLoading(): boolean {
     return _isLoading;
   },
@@ -44,24 +44,24 @@ const LoginStore: TypesLoginStore = {
 
   _handleActions(action: AppAction): void {
     switch (action.type) {
-      case LOGIN_ATTEMPT:
+      case REGISTER_ATTEMPT:
         _isLoading = true;
         _error = null;
         _userData = null;
         this.emitChange();
         break;
-      case LOGIN_SUCCESS:
+      case REGISTER_SUCCESS:
         _isLoading = false;
         _error = null;
         _userData = action.payload as IUserData;
-        console.log('LoginStore: State changed to Success', _userData);
+        console.log('RegisterStore: State changed to Success', _userData);
         this.emitChange();
         break;
-      case LOGIN_FAILURE:
+      case REGISTER_FAILURE:
         _isLoading = false;
         _error = action.payload as string;
         _userData = null;
-        console.log('LoginStore: State changed to Failure', _error);
+        console.log('RegisterStore: State changed to Failure', _error);
         this.emitChange();
         break;
       default:
@@ -69,6 +69,6 @@ const LoginStore: TypesLoginStore = {
   },
 };
 
-LoginStore.dispatchToken = AppDispatcher.register(LoginStore._handleActions.bind(LoginStore));
+RegisterStore.dispatchToken = AppDispatcher.register(RegisterStore._handleActions.bind(RegisterStore));
 
-export default LoginStore;
+export default RegisterStore;

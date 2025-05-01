@@ -18,7 +18,7 @@ export default function Register() {
           ...prevData,
           [name]: value,
         }));
-      };
+    };
 
     const nextStep = () => {
         if (currentStep === 1) {
@@ -34,9 +34,9 @@ export default function Register() {
         setCurrentStep(prevStep => prevStep + 1);
     };
 
-    const prevStep = () => {
-        setCurrentStep(prevStep => prevStep - 1);
-      };
+  const prevStep = () => {
+    setCurrentStep(prevStep => prevStep - 1);
+  };
 
   const handleSubmit = () => {
     console.log("Enviando datos de registro:", formData);
