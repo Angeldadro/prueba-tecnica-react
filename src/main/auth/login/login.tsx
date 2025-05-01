@@ -3,6 +3,7 @@ import "./login.css"
 import { useState, useEffect } from "react";
 // Components
 import Button from "../../shared/components/common/Button/Button";
+import { Link } from "react-router-dom";
 // Stores
 import LoginStore from "../../../stores/LoginStores";
 // Actions
@@ -80,7 +81,7 @@ export default function Login() {
 
                             <div>
                                 <label htmlFor="register-account">
-                                    You don't have an account? <a href="/register">Register</a>
+                                    You don't have an account? <Link to="/register">Register</Link>
                                 </label>
                             </div>
                         </div>
