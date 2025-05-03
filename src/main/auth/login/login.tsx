@@ -3,21 +3,28 @@ import "./login.css"
 import { useState, useEffect } from "react";
 // Components
 import Button from "../../shared/components/common/Button/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // Stores
 import LoginStore from "../../../stores/LoginStores";
 // Actions
 import LoginActions from "../../../actions/LoginActions";
 // interfaces
 import { IUserData } from "../../../types/types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../stores";
+// actiosn redux
+import { setIsAuthenticated } from "../../../stores/AuthSlice";
 
 export default function Login() {
-
     const [authData, setAuthData] = useState<{ email: string, password: string }>({ email: '', password: '' });
-
     const [isLoading, setIsLoading] = useState<boolean>(LoginStore.isLoading());
     const [error, setError] = useState<string | null>(LoginStore.getError());
     const [userData, setUserData] = useState<IUserData | null>(LoginStore.getUserData());
+
+    const isAuth = useSelector((state: RootState) => state.auth.IsAuthenticated)
+    const dispatch = useDispatch()
+    // navigation
+    const navigate = useNavigate()
 
     const _onLoginStateChange = (): void => {
         setIsLoading(LoginStore.isLoading());
@@ -42,10 +49,25 @@ export default function Login() {
         if (error) setError(null);
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        LoginActions.attemptLogin(authData.email, authData.password);
+        await LoginActions.attemptLogin(authData.email, authData.password);
+        if (userData?.access_token) {
+            dispatch(setIsAuthenticated(true))
+            return
+        }
+        dispatch(setIsAuthenticated(false))
     };
+
+    useEffect(() => {
+        if (isAuth) {
+            navigate('/dashboard', { replace: true })
+            console.log("sirivio")
+        }
+
+        console.log("hgola")
+    }, [error, isAuth])
+
 
     return (
             <div className="login-container">
@@ -70,7 +92,7 @@ export default function Login() {
 
                             <div className="login-form-field">
                                 <label htmlFor="username">Password</label>
-                                <input type="text" name="password" id="password"
+                                <input type="password" name="password" id="password"
                                 value={authData.password}
                                 placeholder="**********"
                                 required

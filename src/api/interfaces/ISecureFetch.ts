@@ -6,6 +6,7 @@ export interface SecureFetchType {
         method: MethodsAllowed
         headers?: any
         body?: any,
-        signal?: AbortSignal 
+        signal?: AbortSignal,
+        stringifyBody?: boolean;
     }
 }

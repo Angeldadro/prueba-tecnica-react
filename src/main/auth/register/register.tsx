@@ -1,16 +1,38 @@
 import './register.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { RegistrationData } from './interfaces/IRegister'
 // components
 import { Step1 } from './steps/Step1'
 import { Step2 } from './steps/Step2'
 import Button from '../../shared/components/common/Button/Button'
+import { Step3 } from './steps/Step3'
+import { GetStarted } from './steps/GetStarted'
+import RegisterStore from '../../../stores/RegisterStore'
+import RegisterActions from '../../../actions/RegisterActions'
 
 export default function Register() {
     const [currentStep, setCurrentStep] = useState<number>(0)
     const [formData, setFormData] = useState<RegistrationData>({
-        email: ''
+        email: '',
+        password: '',
+        confirmPassword: ''
     })
+
+    const [isLoading, setIsLoading] = useState<boolean>(RegisterStore.isLoading)
+    const [error, setError] = useState<string | null>(RegisterStore.getError())
+ 
+    const _onRegisterStatechange = () => {
+      setIsLoading(RegisterStore.isLoading())
+      setError(RegisterStore.getError())
+    }
+
+    useEffect(() => {
+        RegisterStore.addChangeListener(_onRegisterStatechange)
+
+        return () => {
+            RegisterStore.removeChangeListener(_onRegisterStatechange)
+        }
+    }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -32,7 +54,7 @@ export default function Register() {
             }
         }
         setCurrentStep(prevStep => prevStep + 1);
-    };
+      };
 
   const prevStep = () => {
     setCurrentStep(prevStep => prevStep - 1);
@@ -40,47 +62,29 @@ export default function Register() {
 
   const handleSubmit = () => {
     console.log("Enviando datos de registro:", formData);
-    alert("¡Registro (simulado) completado!");
-  };
+    RegisterActions.attemptRegister(formData.email, formData.confirmPassword)
+  }
 
    const startRegistration = () => {
        setCurrentStep(1);
-   }
+   } 
 
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return (
-            <div className='register-title-form'>
-                <h1>Get Started</h1>
-                <p>Press the button to get started!</p>
-                <Button onClick={startRegistration}>Register</Button>
-            </div>
-        );
+        return <GetStarted startRegistration={startRegistration}/>
       case 1:
         return <Step1 data={formData} handleChange={handleChange} nextStep={nextStep} />;
       case 2:
         return <Step2 data={formData} handleChange={handleChange} nextStep={nextStep} prevStep={prevStep} />;
       case 3: 
-        return (
-          <div>
-            <h2>Paso 3: Resumen y Confirmar</h2>
-            <p><strong>Email:</strong> {formData.email}</p>
-            <p><strong>Nombre:</strong> {formData.firstName || 'N/A'}</p>
-            <p><strong>Apellido:</strong> {formData.lastName || 'N/A'}</p>
-            <p>Por favor, revisa tus datos antes de registrarte.</p>
-            <div className="step-navigation">
-              <Button onClick={prevStep} theme="primary">Anterior</Button>
-              <Button onClick={handleSubmit}>Confirmar Registro</Button>
-            </div>
-          </div>
-        );
+        return <Step3 formData={formData} handleSubmit={handleSubmit} prevStep={prevStep} isLoading={isLoading} />;
       default:
         return (
-            <div className='register-title-form'>
-                 <h1>¡Registro Completado!</h1>
-                 <Button onClick={() => setCurrentStep(0)}>Inicio</Button>
-            </div>
+          <div className='register-title-form'>
+              <h1>¡Registro Completado!</h1>
+              <Button onClick={() => setCurrentStep(0)}>Inicio</Button>
+          </div>
         );
     }
   };
@@ -90,7 +94,10 @@ export default function Register() {
       <div className='register-content'>
          {currentStep > 0 && currentStep <= 3 && (
              <div className='step-indicator'>
-                 Paso {currentStep} de 3
+                 Step {currentStep} of 3
+                 <span>
+                  {error && error}
+                 </span>
              </div>
          )}
 

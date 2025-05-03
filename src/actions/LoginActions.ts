@@ -22,8 +22,9 @@ const LoginActions = {
       type: LOGIN_SUCCESS,
       payload: userData,
     });
-  },
 
+  },
+  
   loginFailure(errorMessage: string): void {
     AppDispatcher.dispatch({
       type: LOGIN_FAILURE,

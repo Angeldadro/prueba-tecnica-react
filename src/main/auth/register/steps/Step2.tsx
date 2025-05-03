@@ -3,34 +3,36 @@ import { Step2Props } from "../interfaces/IRegister";
 
 export const Step2: React.FC<Step2Props> = ({ data, handleChange, nextStep, prevStep }) => {
     return (
-      <div>
-        <h2>Paso 2: Datos Personales</h2>
+      <div className="r-form-step">
+        <h2>Step Two</h2>
         <div className="register-form-field">
-          <label htmlFor="firstName">Nombre</label>
+          <label htmlFor="firstName">Name</label>
           <input
             type="text"
             name="firstName"
             id="firstName"
-            placeholder="Tu Nombre"
+            placeholder="Name..."
             value={data.firstName || ''}
             onChange={handleChange}
           />
         </div>
         <div className="register-form-field">
-          <label htmlFor="lastName">Apellido</label>
+          <label htmlFor="lastName">Lastname</label>
           <input
             type="text"
             name="lastName"
             id="lastName"
-            placeholder="Tu Apellido"
+            placeholder="LastName..."
             value={data.lastName || ''}
             onChange={handleChange}
           />
         </div>
+
         <div className="step-navigation">
-          <Button onClick={prevStep} theme="primary">Anterior</Button>
-          <Button onClick={nextStep}>Siguiente</Button>
+          <Button onClick={prevStep} theme="primary">Previous</Button>
+          <Button onClick={nextStep}>Next</Button>
         </div>
+
       </div>
     );
   };

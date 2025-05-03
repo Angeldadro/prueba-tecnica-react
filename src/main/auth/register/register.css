@@ -1,3 +1,5 @@
+
+
 .register-container {
     display: flex;
     justify-content: center;
@@ -12,13 +14,101 @@
     height: 100vh;
     flex-direction: column;
     gap: 1.2rem;
+    position: relative;
 } 
 
 .register-title-form {
     text-align: center;
+    gap: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 
 .register-title-form h1 {
     font-size: 2rem;
 }
+
+/* FIELDS TO FORM REGISTER */
+
+.register-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap);
+}
+
+.register-form-field input {
+    padding: .6rem 1rem;
+    border: 1px solid transparent;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+    color: var(--dark-color);
+    font-family: 'Onest', Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.register-form-field input:focus {
+    background-color: rgba(200, 200, 255, 0.7);
+    outline: none;
+    border: 1px solid #6a7bff;
+    box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
+}
+
+.cont-button-next {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+/* FIELDS TO FORM REGISTER */
+
+/* STYLYING FOR STEPS */
+
+.r-form-step {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap);
+    border: 1px solid var(--background-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.05);;
+    padding: 2rem 1rem;
+    border-radius: var(--border-radius);
+}
+
+.step-indicator {
+    position: absolute;
+    top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.step-indicator span {
+    display: block;
+    color: var(--color-error);
+}
+
+.step-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--default-gap) - .2rem);
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .r-form-step {
+        width: 100%;
+    }
+
+    .register-content {
+        width: 90%;
+    }
+}
+
+/* STYLYING FOR STEPS */

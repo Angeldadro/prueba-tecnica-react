@@ -54,14 +54,12 @@ const LoginStore: TypesLoginStore = {
         _isLoading = false;
         _error = null;
         _userData = action.payload as IUserData;
-        console.log('LoginStore: State changed to Success', _userData);
         this.emitChange();
         break;
       case LOGIN_FAILURE:
         _isLoading = false;
         _error = action.payload as string;
         _userData = null;
-        console.log('LoginStore: State changed to Failure', _error);
         this.emitChange();
         break;
       default:

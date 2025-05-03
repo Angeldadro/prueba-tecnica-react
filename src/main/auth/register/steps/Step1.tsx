@@ -3,8 +3,9 @@ import Button from "../../../shared/components/common/Button/Button";
 
 export const Step1: React.FC<StepProps> = ({ data, handleChange, nextStep }) => {
     return (
-      <div>
-        <h2>Paso 1: Crear Cuenta</h2>
+      <div className="r-form-step">
+        <h2>Step One</h2>
+
         <div className="register-form-field">
           <label htmlFor="email">Email</label>
           <input
@@ -17,8 +18,9 @@ export const Step1: React.FC<StepProps> = ({ data, handleChange, nextStep }) => 
             required
           />
         </div>
+
         <div className="register-form-field">
-          <label htmlFor="password">Contraseña</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             name="password"
@@ -30,19 +32,23 @@ export const Step1: React.FC<StepProps> = ({ data, handleChange, nextStep }) => 
             minLength={8}
           />
         </div>
+
          <div className="register-form-field">
-          <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            id="confirmPassword"
-            placeholder="********"
-            value={data.confirmPassword || ''}
-            onChange={handleChange}
-            required
-          />
+            <label htmlFor="confirmPassword">Confirm password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              id="confirmPassword"
+              placeholder="********"
+              value={data.confirmPassword || ''}
+              onChange={handleChange}
+              required
+            />
         </div>
-        <Button onClick={nextStep}>Siguiente</Button>
+        
+        <div className="cont-button-next">
+          <Button onClick={nextStep}>Next</Button>
+        </div>
       </div>
     );
 };

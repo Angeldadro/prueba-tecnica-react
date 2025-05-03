@@ -36,6 +36,9 @@
   --border-radius: 1rem;
   --border-radius-large: 1.1rem;
   --border-radius-extra-large: 2rem;
+  --default-gap: .8rem;
+  --background-color: rgba(224, 224, 224, 0.5);
+  --color-error: rgb(255, 103, 103);
 }
 
 * {
@@ -52,4 +55,8 @@ p {
 
 button {
     font-family: 'Onest', Helvetica, Arial, sans-serif;
+}
+
+input {
+  background: var(--background-color); 
 }

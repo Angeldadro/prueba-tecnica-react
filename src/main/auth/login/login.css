@@ -67,7 +67,7 @@
 .login-form-field input {
     padding: .6rem 1rem;
     border: 1px solid transparent;
-    background-color: rgba(224, 224, 224, 0.5);
+    background-color: var(--background-color);
     border-radius: var(--border-radius);
     font-size: var(--font-size-medium);
     color: var(--dark-color);
@@ -80,5 +80,5 @@
     outline: none;
     border: 1px solid #6a7bff;
     box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
-  }
+}
 

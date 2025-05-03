@@ -4,12 +4,19 @@ export const secureFetch = async ({ options }: SecureFetchType): Promise<{ data:
     try {
         const res = await fetch(options.url, {
             method: options.method,
-            body: options.body ? options.body : null,
-            signal: options.signal
+            body: 
+            options.body 
+            ? options.stringifyBody 
+            ? JSON.stringify(options.body) 
+            : options.body : null,
+            headers: options.headers
+            //signal: options.signal
         })
 
         if (!res.ok) {
-            throw new Error(`Error | Server has responded with a exit code ${res.status}`)
+            const error = await res.json()
+            console.log(error)
+            throw new Error(error || `Error | Server has responded with a exit code ${res.status}`)
         }
 
         const data = await res.json()
