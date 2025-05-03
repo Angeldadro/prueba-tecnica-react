@@ -62,10 +62,7 @@ export default function Login() {
     useEffect(() => {
         if (isAuth) {
             navigate('/dashboard', { replace: true })
-            console.log("sirivio")
         }
-
-        console.log("hgola")
     }, [error, isAuth])
 
 
