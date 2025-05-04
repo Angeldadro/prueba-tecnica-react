@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../stores";
 // actiosn redux
 import { setIsAuthenticated } from "../../../stores/AuthSlice";
+import { uCookies } from "../../../shared/services/cookies";
 
 export default function Login() {
     const [authData, setAuthData] = useState<{ email: string, password: string }>({ email: '', password: '' });
@@ -53,6 +54,7 @@ export default function Login() {
         e.preventDefault();
         await LoginActions.attemptLogin(authData.email, authData.password);
         if (userData?.access_token) {
+            uCookies.setCookie('AuthToken', userData.access_token)
             dispatch(setIsAuthenticated(true))
             return
         }
