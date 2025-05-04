@@ -1,0 +1,18 @@
+.prd-content {
+    width: 100%;
+}
+
+.prd-title h1 {
+    background: linear-gradient(to right, #202020, #2c2c2c, rgb(40, 35, 68), #292929);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
+}
+
+.prd-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}

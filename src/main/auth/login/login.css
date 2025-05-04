@@ -82,3 +82,17 @@
     box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
 }
 
+@media (max-width: 728px) {
+    .login-form {
+        border: none;
+    }
+
+    .login-form-fields {
+        width: 100%;
+    }
+
+    .login-form-content {
+        width: 100%;
+    }
+}
+
