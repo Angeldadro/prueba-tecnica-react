@@ -19,7 +19,7 @@
 }
 
 .new-product-cn {
-    background: #fffefe;
+    background: var(--background-modal-color);
     border-radius: var(--border-radius);
     border: 1px solid var(--border-primary-color);
     opacity: 0;

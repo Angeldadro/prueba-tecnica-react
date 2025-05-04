@@ -4,9 +4,21 @@ import './CardProduct.css'
 // components
 import Button from "../../../shared/components/common/Button/Button";
 import { useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../../../stores";
+import { useDispatch } from "react-redux";
+import { setProductMemory } from "../../../../stores/ProductSlice";
 
 export default function CardProduct({ item, state }: { item: Product[], state: boolean }) {
     const navigate = useNavigate()
+    
+    // redux
+    const dispatcher: AppDispatch = useDispatch();
+
+    const goToProduct = (item: Product) => {
+        if (!item) return 
+        dispatcher(setProductMemory(item))
+        navigate(`/product/details/${item.id}`)
+    }
 
     const CardDetails = ({ item }: { item: Product }) => {
         return (
@@ -27,7 +39,7 @@ export default function CardProduct({ item, state }: { item: Product[], state: b
                 </div>
 
                 <div>
-                    <Button onClick={() => {navigate(`/product/details/${item.id}`)}}>See details</Button>
+                    <Button onClick={() => {goToProduct(item)}}>See details</Button>
                 </div>
             </div>
         )

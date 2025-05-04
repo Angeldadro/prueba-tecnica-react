@@ -1,0 +1,133 @@
+.process-main {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.644);
+}
+
+.process-modal {
+    width: 500px;
+    height: 600px;
+    background-color: var(--background-modal-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-primary-color);
+    overflow-y: scroll;
+}
+
+.process-modal::-webkit-scrollbar {
+    display: none;
+}
+
+.title-transaction {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-primary-color);
+}
+
+.form-payment {
+    padding: 1rem;
+    display: grid;
+    gap: var(--default-gap);
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--default-gap);
+}
+
+.form-field input {
+    padding: .6rem 1rem;
+    border: 1px solid transparent;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-medium);
+    color: var(--dark-color);
+    font-family: 'Onest', Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.form-field input:focus {
+    background-color: rgba(200, 200, 255, 0.7);
+    outline: none;
+    border: 1px solid #6a7bff;
+    box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
+}
+
+.form-credit-card-info {
+    width: 100%;
+    display: grid;
+    gap: .8rem;
+}
+
+.form-29ef0569e044 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--default-gap);
+    border-bottom: 1px solid var(--border-primary-color);
+}
+
+.form-0992d97d7464 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-0992d97d7464 input {
+    width: 100%;
+    padding: .8rem;
+    background: transparent;
+    border: none;
+}
+
+.form-0992d97d7464 div {
+    width: 100%;
+}
+
+.form-0992d97d7464 #i-date {
+    border: 1px solid transparent;
+    border-radius: 0 0 0 var(--border-radius);
+    border-right: .0001px solid var(--border-primary-color);
+    
+    transition: .1s ease;
+}
+
+.form-0992d97d7464 #i-date:focus {
+    background-color: rgba(200, 200, 255, 0.7);
+    outline: none;
+    border: .0001px solid #6a7bff;
+    box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
+}
+
+.form-0992d97d7464 #i-code {
+    border-radius: 0 0 var(--border-radius) 0;
+    border: 1px solid transparent;
+    transition: .1s ease; 
+}
+
+.form-0992d97d7464 #i-code:focus {
+    background-color: rgba(200, 200, 255, 0.7);
+    outline: none;
+    border: .0001px solid #6a7bff;
+    box-shadow: 0 0 5px rgba(106, 123, 255, 0.5);
+}
+
+
+.form-29ef0569e044 input {
+    width: 100%;
+    padding: .8rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius) 0 0 0;
+}
+
+
+.form-card-data {
+    border: 1px solid var(--border-primary-color);
+    border-radius: var(--border-radius);
+}

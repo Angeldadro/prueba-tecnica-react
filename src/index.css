@@ -38,6 +38,7 @@
   --border-radius-extra-large: 2rem;
   --default-gap: .8rem;
   --background-color: rgba(224, 224, 224, 0.5);
+  --background-modal-color: #fffefe;
   --border-primary-color: rgba(201, 201, 201, 0.5);
   --color-error: rgb(255, 103, 103);
   --padding-default: 1rem;
