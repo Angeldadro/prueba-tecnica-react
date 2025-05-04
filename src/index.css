@@ -40,6 +40,7 @@
   --background-color: rgba(224, 224, 224, 0.5);
   --border-primary-color: rgba(201, 201, 201, 0.5);
   --color-error: rgb(255, 103, 103);
+  --padding-default: 1rem;
 }
 
 * {

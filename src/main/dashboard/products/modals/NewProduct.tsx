@@ -1,8 +1,11 @@
 import { createPortal } from "react-dom";
 import './NewProduct.css'
 import Button from "../../../shared/components/common/Button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "../interfaces/Product";
+import { AppDispatch, RootState } from "../../../../stores";
+import { useDispatch, useSelector } from "react-redux";
+import { addProduct, clearProductError } from "../../../../stores/ProductSlice";
 
 interface NewProductModalProps {
     isOpen: boolean;
@@ -14,37 +17,70 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
     const [product, setProduct] = useState<Product>({ 
         id: '',
         name: '',
-        price: 0,
-        stock: 0
-    }) 
+        price: null,
+        stock: null,
+        description: ''
+    })
 
+    const dispatch: AppDispatch = useDispatch()
+
+    const { status, error } = useSelector((state: RootState) => state.products)
+
+    useEffect(() => {
+        if (isOpen && error) {
+            dispatch(clearProductError())
+        }
+
+        return () => {
+            dispatch(clearProductError())
+        }
+    }, [])
+ 
     const handleCloseModal = () => {
+        if (status === 'loading') return
         setIsOpen(!isOpen)
+        if (error) dispatch(clearProductError())
+        setProduct({ name: '', description: '', price: null, stock: null, id: '' })
     }
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
-        const inputsNumbers = ['price']
+        const inputsNumbers = ['price', 'stock'];
         setProduct(prevProducto => {
             let updatedValue: string | number = value;
 
             if (inputsNumbers.includes(name)) {
                 updatedValue = value === '' ? 0 : parseFloat(value);
-
-                if (updatedValue.toString().split('.').length > 1) {
-                    const fixed = updatedValue.toString().split('.')[1].slice(0, 2)
-                    updatedValue = parseFloat(`${updatedValue.toString().split('.')[0].slice(0, 10)}.${fixed}`)
-                }
+                 if (isNaN(updatedValue)) {
+                     updatedValue = 0;
+                 } else if (name === 'price' && updatedValue.toString().includes('.')) {
+                     const parts = updatedValue.toString().split('.');
+                     const fixed = parts[1].slice(0, 2);
+                     updatedValue = parseFloat(`${parts[0]}.${fixed}`);
+                 } else if (name === 'stock') {
+                     updatedValue = Math.floor(updatedValue);
+                 }
             }
             return {
-                ...prevProducto, 
+                ...prevProducto,
                 [name]: updatedValue,
             };
         });
+
+         if (error) {
+             dispatch(clearProductError());
+         }
     };
 
-    const handleSubmit = () => {
-        console.log(product)
+    const handleSubmit = async () => {
+        if (status === 'loading') return
+        if (product.price === 0 || product.stock === 0 || !product.price || !product.stock) return
+        if (product.name === '' || product.description === '') return
+        product.id = crypto.randomUUID().split('-')[4]
+
+        const result = await dispatch(addProduct(product))
+        handleCloseModal()
+        console.log(result.payload)
     }
 
     return createPortal(
@@ -63,6 +99,7 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
                         <p>Name</p>
                         <input type="text" placeholder="Name of the product..." name="name"
                         onChange={handleInputChange}
+                        value={product.name}
                         />
                     </div>
 
@@ -70,6 +107,7 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
                         <p>Price</p>
                         <input type="number" placeholder="20.00" name="price" 
                         onChange={handleInputChange}
+                        value={product.price ? product.price : ''}
                         />
                     </div>
 
@@ -77,6 +115,7 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
                         <p>Stock</p>
                         <input type="number" placeholder="100.. 15" name="stock" 
                         onChange={handleInputChange}
+                        value={product.stock ? product.stock : ''}
                         />
                     </div>
                 </div>
@@ -84,14 +123,17 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
                 <div className="product-textare-desc">
                     <p>Description</p>
 
-                    <textarea name="desc" id="desc"
+                    <textarea name="description" id="description"
                     placeholder="Describe your product here..."
                     onChange={handleInputChange}
+                    value={product.description}
                     ></textarea>
                 </div>
 
                 <div className="button-create-prd">
-                    <Button onClick={handleSubmit}>Create</Button>
+                    <Button onClick={handleSubmit} disabled={status === 'loading' ? true : false}>
+                        {status === 'loading' ? 'Creating...' : 'Create'}
+                    </Button>
                 </div>
             </div>
         </div>,

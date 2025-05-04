@@ -8,13 +8,50 @@ interface ProductsState {
     items: Product[];
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
+    productMemory: Product
 }
 
 const initialState: ProductsState = {
     items: [],
     status: 'idle',
     error: null,
+    productMemory: {
+        id: '', description: '',
+        name: '', price: 0,
+        stock: 0
+    }
 };
+
+export const fetchProducts = createAsyncThunk<
+    Product[], 
+    void,    
+    { rejectValue: string }>(
+    'products/fetchProducts',
+    async (_, { rejectWithValue }) => {
+        const token = uCookies.getCookie('AuthToken');
+        if (!token) {
+            return rejectWithValue("Authentication token missing.");
+        }
+
+        const { error, data } = await secureFetch({
+            options: {
+                url: `${API_URL}/items`,
+                method: 'GET',      
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        });
+
+        if (data) {
+            return data;
+        }
+        if (error) {
+            return rejectWithValue(error);
+        }
+        return rejectWithValue('Unknown error fetching products');
+    }
+);
 
 export const addProduct = createAsyncThunk<Product, Product, { rejectValue: string }>(
     'products/addProduct',
@@ -43,13 +80,21 @@ const productSlice = createSlice({
     reducers: {
         setIsSaving: (state, { payload }) => {
             state.status = payload
-        } 
+        },
+        clearProductError: (state) => {
+            state.error = null
+        },
+        setProductMemory: (state, { payload }) => {
+            state.productMemory = payload
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(addProduct.pending, (state) => {
             state.status = 'loading'
             state.error = null
         })
+
+        // Cretae products
         .addCase(addProduct.fulfilled, (state, action: PayloadAction<Product>) => {
             state.status = 'succeeded'
             state.items.push(action.payload)
@@ -58,9 +103,24 @@ const productSlice = createSlice({
         .addCase(addProduct.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.payload ?? 'Failed to add product (unknown error)';
+        })
+        
+        // Fetching products
+        .addCase(fetchProducts.pending, (state) => {
+            state.status = 'loading'; 
+            state.error = null;
+        })
+        .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
+            state.status = 'succeeded';
+            state.items = action.payload;
+            state.error = null;
+        })
+        .addCase(fetchProducts.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload ?? 'Failed to fetch products';
         });
     },
 })
 
-export const { setIsSaving } = productSlice.actions;
+export const { setIsSaving, clearProductError, setProductMemory } = productSlice.actions;
 export default productSlice;

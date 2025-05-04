@@ -1,11 +1,12 @@
 import { lazy } from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import { Navigate } from "react-router-dom"
+const ProductDetails = lazy(() => import("./main/products/Details/Details"));
 const Dashboard = lazy(() => import("./main/dashboard/dashboard")) 
 const ProtectedRoutes = lazy(() => import("./main/shared/components/ProtectedRoutes/ProtectedRoutes")); 
 const Products = lazy(() => import("./main/dashboard/products/products")) 
 const Register = lazy(() => import("./main/auth/register/register"))
 const Login = lazy(() => import('./main/auth/login/login'))
+const ProductsUser = lazy(() => import('./main/products/products'))
 
 function App() {
 
@@ -20,7 +21,11 @@ function App() {
     },
     {
       path: '/',
-      Component: () => <Navigate to="/login" replace/>,
+      Component: () => <ProductsUser />,
+    },
+    {
+      path: '/product/details/:id',
+      Component: () => <ProductDetails />
     },
     {
       path: '/dashboard',
