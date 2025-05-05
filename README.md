@@ -22,10 +22,10 @@ docker build -t pt-react .
 
 ### Ejecutar el contenedor
 ```bash
-docker run -p 80:80 pt-react
+docker run -p 8000:8000 pt-react
 ```
 
-La aplicación estará disponible en `http://localhost:8080`
+La aplicación estará disponible en `http://localhost:8000`
 
 ## Ejecución de Tests
 
@@ -104,3 +104,5 @@ npm run lint
 - `npm run lint`: Ejecuta el linter
 - `npm run build`: Compila el proyecto
 - `npm run dev`: Inicia el servidor de desarrollo
+
+<img src="./src/assets/coverage_front.png" />
