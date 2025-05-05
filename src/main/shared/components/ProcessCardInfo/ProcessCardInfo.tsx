@@ -5,7 +5,7 @@ import Button from '../common/Button/Button';
 import CardIcon from '../../../../assets/svgs/checkout/CardIcon';
 import VisaIcon from '../../../../assets/svgs/checkout/VisaIcon';
 import { Product } from '../../../dashboard/products/interfaces/Product';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // interfaces
 import { ICreateOrderPayload } from './interfaces/CreateOrder';
 import { useDispatch, useSelector } from 'react-redux';

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import ProcessCardInfo from './ProcessCardInfo';
 import checkoutReducer from '../../../../stores/CheckoutSlice';
-import notificationReducer, { addNotificationWithTimeout } from '../../../../stores/NotificationSlice';
+import notificationReducer from '../../../../stores/NotificationSlice';
 import authReducer from '../../../../stores/AuthSlice';
 import productReducer from '../../../../stores/ProductSlice';
 import { Product } from '../../../dashboard/products/interfaces/Product';
@@ -20,7 +20,7 @@ const mockDispatch = jest.fn().mockImplementation((action) => {
 
 const mockAddNotification = jest.fn().mockImplementation((payload) => {
   console.log('Mock notification called with:', payload);
-  return (dispatch) => {
+  return (dispatch: any) => {
     dispatch({
       type: 'notifications/addNotification',
       payload: payload
@@ -33,7 +33,7 @@ const mockAddNotification = jest.fn().mockImplementation((payload) => {
 });
 
 jest.mock('../../../../stores/NotificationSlice', () => ({
-  ...jest.requireActual('../../../../stores/NotificationSlice'),
+  ...jest.requireActual('../../../../stores/NotificationSlice') as any,
   addNotificationWithTimeout: mockAddNotification
 }));
 
