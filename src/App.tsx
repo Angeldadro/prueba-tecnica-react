@@ -1,5 +1,6 @@
 import { lazy } from "react"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+const PaymentStatus = lazy(() => import("./main/shared/components/PaymentStatus/PaymentStatus")) ;
 const ProductDetails = lazy(() => import("./main/products/Details/Details"));
 const Dashboard = lazy(() => import("./main/dashboard/dashboard")) 
 const ProtectedRoutes = lazy(() => import("./main/shared/components/ProtectedRoutes/ProtectedRoutes")); 
@@ -26,6 +27,10 @@ function App() {
     {
       path: '/product/details/:id',
       Component: () => <ProductDetails />
+    },
+    {
+      path: '/payment/:id/status',
+      Component: () => <PaymentStatus />
     },
     {
       path: '/dashboard',

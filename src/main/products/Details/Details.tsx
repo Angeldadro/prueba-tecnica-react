@@ -20,7 +20,7 @@ export default function ProductDetails() {
 
     useEffect(() => {
         if (productMemory.id !== '') uCookies.setCookie('productMemory', JSON.stringify(productMemory))
-        
+        if (id) uCookies.setCookie('productId', id)
         const product = JSON.parse(uCookies.getCookie('productMemory'))
         setProduct(product)
     }, [])
@@ -32,6 +32,10 @@ export default function ProductDetails() {
                     <div className='product-sel'>
                         <h1>{product.name}</h1>
                         <p id='desc-product'>{product.description}</p>
+                    </div>
+
+                    <div className='product-stock'>
+                        <p>Available | {product.stock}</p>
                     </div>
 
                     <div className='product-amount'>

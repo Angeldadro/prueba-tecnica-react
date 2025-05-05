@@ -18,6 +18,7 @@ import MasterCardIcon from '../../../../assets/svgs/checkout/MasterCardIcon';
 import DiscoverIcon from '../../../../assets/svgs/checkout/DiscoverIcon';
 import DinnersClubIcon from '../../../../assets/svgs/checkout/DinnersClubIcon';
 import JcbIcon from '../../../../assets/svgs/checkout/JcbIcon';
+import { useNavigate } from 'react-router-dom';
 
 interface ProcessCardInfo {
     item: Product;
@@ -50,8 +51,8 @@ export default function ProcessCardInfo({ item, isOpen, setIsOpen, fee }: Proces
     const [privacy, setPrivacy] = useState<{ terms: boolean, personalData: boolean }>({ terms: false, personalData: false })
 
     const dispatcher: AppDispatch = useDispatch();
-    const { error, status } = useSelector((state: RootState) => state.checkout)
-    const { acceptenceToken } = useSelector((state: RootState) => state.checkout)
+    const { error, status, acceptenceToken } = useSelector((state: RootState) => state.checkout)
+    const navigate = useNavigate()
 
     const handleCloseModal = () => {
         setIsOpen(false);
@@ -127,6 +128,9 @@ export default function ProcessCardInfo({ item, isOpen, setIsOpen, fee }: Proces
                 message: 'Order has been created successfully!',
                 type: 'success'
             }))
+
+            navigate(`/payment/${transaction.id}/status`)
+            handleCloseModal()
         }
     }, [status, error])
 
@@ -231,9 +235,6 @@ export default function ProcessCardInfo({ item, isOpen, setIsOpen, fee }: Proces
                                 <div className='form-cards-logos'>
                                     <VisaIcon />
                                     <MasterCardIcon />
-                                    <DiscoverIcon />
-                                    <DinnersClubIcon />
-                                    <JcbIcon />
                                 </div>
                             </div>
 

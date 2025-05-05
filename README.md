@@ -13,6 +13,20 @@ cd prueba-tecnica-react
 npm install
 ```
 
+## Docker
+
+### Construir la imagen
+```bash
+docker build -t pt-react .
+```
+
+### Ejecutar el contenedor
+```bash
+docker run -p 80:80 pt-react
+```
+
+La aplicación estará disponible en `http://localhost:8080`
+
 ## Ejecución de Tests
 
 ### Ejecutar todos los tests
