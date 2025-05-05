@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Product } from "../interfaces/Product";
 import { AppDispatch, RootState } from "../../../../stores";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, clearProductError } from "../../../../stores/ProductSlice";
+import { addProduct, addProductToList, clearProductError } from "../../../../stores/ProductSlice";
 
 interface NewProductModalProps {
     isOpen: boolean;
@@ -78,9 +78,9 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
         if (product.name === '' || product.description === '') return
         product.id = crypto.randomUUID().split('-')[4]
 
-        const result = await dispatch(addProduct(product))
+        await dispatch(addProduct(product))
+        dispatch(addProductToList(product))
         handleCloseModal()
-        console.log(result.payload)
     }
 
     return createPortal(
@@ -131,7 +131,7 @@ export default function NewProduct({ isOpen, setIsOpen }: NewProductModalProps) 
                 </div>
 
                 <div className="button-create-prd">
-                    <Button onClick={handleSubmit} disabled={status === 'loading' ? true : false}>
+                    <Button onClick={handleSubmit} disabled={status === 'loading'}>
                         {status === 'loading' ? 'Creating...' : 'Create'}
                     </Button>
                 </div>

@@ -25,6 +25,7 @@ export interface ICreateOrderPayload {
     items: IOrderItem[];          
     shippingAddress: IAddress;    
     paymentDetails: IPaymentDetails;
+    acceptenceToken: string;
 }
  
 /* ejemplo para saber como mandarla */

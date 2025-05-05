@@ -23,23 +23,26 @@ export const addNotificationWithTimeout = createAsyncThunk<
     'notifications/addWithTimeout',
     async ({ message, type, duration = 5000 }, { dispatch }) => {
         const id = crypto.randomUUID().split('-')[4];
+        console.log('Adding notification with id:', id);
         dispatch(addNotification({ id, message, type, duration }));
 
         setTimeout(() => {
+            console.log('Removing notification with id:', id);
             dispatch(removeNotification({ id }));
         }, duration);
     }
 );
-
 
 const notificationSlice = createSlice({
     name: 'notifications',
     initialState,
     reducers: {
         addNotification: (state, action: PayloadAction<Notification>) => {
+            console.log('Reducer: Adding notification:', action.payload);
             state.notifications.unshift(action.payload);
         },
         removeNotification: (state, action: PayloadAction<{ id: string }>) => {
+            console.log('Reducer: Removing notification with id:', action.payload.id);
             state.notifications = state.notifications.filter(
                 (notification) => notification.id !== action.payload.id
             );

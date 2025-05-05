@@ -66,11 +66,14 @@ export const addProduct = createAsyncThunk<Product, Product, { rejectValue: stri
                     'Authorization': `Bearer ${uCookies.getCookie('AuthToken')}`
                 },
                 body: newProductData,
-                stringifyBody: true
+                stringifyBody: true,
+                convertJson: true
             }
         })
         
-        if (data) return data
+        if (data) {
+            return data
+        }
         if (error) return rejectWithValue(error)
     }
 );
@@ -87,6 +90,9 @@ const productSlice = createSlice({
         },
         setProductMemory: (state, { payload }) => {
             state.productMemory = payload
+        },
+        addProductToList: (state, { payload }) => {
+            state.items.push(payload)
         }
     },
     extraReducers: (builder) => {
@@ -96,9 +102,8 @@ const productSlice = createSlice({
         })
 
         // Cretae products
-        .addCase(addProduct.fulfilled, (state, action: PayloadAction<Product>) => {
+        .addCase(addProduct.fulfilled, (state) => {
             state.status = 'succeeded'
-            state.items.push(action.payload)
             state.error = null
         })
         .addCase(addProduct.rejected, (state, action) => {
@@ -123,5 +128,5 @@ const productSlice = createSlice({
     },
 })
 
-export const { setIsSaving, clearProductError, setProductMemory } = productSlice.actions;
+export const { setIsSaving, clearProductError, setProductMemory, addProductToList } = productSlice.actions;
 export default productSlice;

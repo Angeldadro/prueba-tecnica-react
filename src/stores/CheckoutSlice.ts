@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { secureFetch } from "../api/secureFetch";
-import { API_URL } from "../config/test.config";
+import { API_TEST, API_URL } from "../config/test.config";
 import { uCookies } from "../shared/services/cookies";
 //  transaction
 import { ICreateOrderPayload } from "../main/shared/components/ProcessCardInfo/interfaces/CreateOrder";
@@ -8,11 +8,15 @@ import { ICreateOrderPayload } from "../main/shared/components/ProcessCardInfo/i
 interface CheckoutState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
+    acceptenceToken: any | null;
+    acceptenceTokenStatus: 'idle' | 'loading' | 'succeeded' | 'failed';
 }
 
 const initialState: CheckoutState = {
     status: 'idle',
-    error: null
+    error: null,
+    acceptenceToken: null,
+    acceptenceTokenStatus: 'idle'
 };
 
 export const validatePayment = createAsyncThunk<
@@ -34,9 +38,9 @@ export const validatePayment = createAsyncThunk<
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: NewOrder,
                 stringifyBody: true,
-                convertJson: false
+                convertJson: false,
+                body: NewOrder
             }
         });
 
@@ -46,10 +50,38 @@ export const validatePayment = createAsyncThunk<
         if (error) {
             return rejectWithValue(error);
         }
-        return rejectWithValue('Unknown error fetching products');
+        return rejectWithValue('Unknown error creating order');
     }
 );
 
+export const getAcceptenceToken = createAsyncThunk<
+    any,
+    void,
+    { rejectValue: string }>(
+    'checkout/getAcceptenceToken',
+    async (_, { rejectWithValue }) => {
+        const { error, data } = await secureFetch({
+            options: {
+                url: `${API_TEST}`,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                convertJson: true
+            }
+        })
+
+        if (data) {
+            return data;
+        }
+        
+        if (error) {
+            return rejectWithValue(error);
+        }
+
+        return rejectWithValue('Unknown error getting acceptence token');
+    }
+)
 
 const checkoutSlice = createSlice({
     name: 'checkout',
@@ -71,6 +103,19 @@ const checkoutSlice = createSlice({
         .addCase(validatePayment.rejected, (state, { payload }) => {
             state.error = payload || 'An error has occurred while processing this payment. Try again.'
             state.status = 'failed' 
+        })
+
+        .addCase(getAcceptenceToken.pending, (state) => {
+            state.acceptenceTokenStatus = 'loading'
+            state.error = null
+        })
+        .addCase(getAcceptenceToken.fulfilled, (state, { payload }) => {
+            state.acceptenceToken = payload
+            state.acceptenceTokenStatus = 'succeeded'
+        })
+        .addCase(getAcceptenceToken.rejected, (state, { payload }) => {
+            state.error = payload || 'An error has occurred while processing this payment. Try again.'
+            state.acceptenceTokenStatus = 'failed' 
         })
 
     },

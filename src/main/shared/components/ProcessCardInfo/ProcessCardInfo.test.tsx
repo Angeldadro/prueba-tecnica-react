@@ -1,16 +1,42 @@
 import '@testing-library/jest-dom';
+import { jest } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import ProcessCardInfo from './ProcessCardInfo';
 import checkoutReducer from '../../../../stores/CheckoutSlice';
-import notificationReducer from '../../../../stores/NotificationSlice';
+import notificationReducer, { addNotificationWithTimeout } from '../../../../stores/NotificationSlice';
 import authReducer from '../../../../stores/AuthSlice';
 import productReducer from '../../../../stores/ProductSlice';
 import { Product } from '../../../dashboard/products/interfaces/Product';
 import { RootState } from '../../../../stores';
 
-// Mock the crypto.randomUUID function
+const mockDispatch = jest.fn().mockImplementation((action) => {
+  if (typeof action === 'function') {
+    return action(mockDispatch);
+  }
+  return action;
+});
+
+const mockAddNotification = jest.fn().mockImplementation((payload) => {
+  console.log('Mock notification called with:', payload);
+  return (dispatch) => {
+    dispatch({
+      type: 'notifications/addNotification',
+      payload: payload
+    });
+    return Promise.resolve({
+      type: 'notifications/addNotification',
+      payload: payload
+    });
+  };
+});
+
+jest.mock('../../../../stores/NotificationSlice', () => ({
+  ...jest.requireActual('../../../../stores/NotificationSlice'),
+  addNotificationWithTimeout: mockAddNotification
+}));
+
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'crypto', {
     value: {
@@ -19,20 +45,34 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Create a mock store
 const createMockStore = (initialState: Partial<RootState> = {}) => {
-  return configureStore({
+  const store = configureStore({
     reducer: {
       auth: authReducer.reducer,
       products: productReducer.reducer,
       checkout: checkoutReducer.reducer,
       notifications: notificationReducer.reducer
     },
-    preloadedState: initialState as RootState
+    preloadedState: {
+      notifications: {
+        notifications: []
+      },
+      ...initialState
+    } as RootState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+        thunk: true
+      })
   });
+
+  if (typeof window !== 'undefined') {
+    (window as any).store = store;
+  }
+  
+  return store;
 };
 
-// Mock product data
 const mockProduct: Product = {
   id: '1',
   name: 'Test Product',
@@ -59,14 +99,14 @@ describe('ProcessCardInfo Component', () => {
   };
 
   beforeEach(() => {
-    // Create a div with id 'modal-process-card-info' for the portal
+
     const modalRoot = document.createElement('div');
     modalRoot.setAttribute('id', 'modal-process-card-info');
     document.body.appendChild(modalRoot);
   });
 
   afterEach(() => {
-    // Clean up
+
     const modalRoot = document.getElementById('modal-process-card-info');
     if (modalRoot) {
       document.body.removeChild(modalRoot);
@@ -96,24 +136,47 @@ describe('ProcessCardInfo Component', () => {
   });
 
   it('validates required fields before submission', async () => {
-    renderComponent();
-    const submitButton = screen.getByText(/Pay \$110.00/);
-    fireEvent.click(submitButton);
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <ProcessCardInfo {...defaultProps} />
+      </Provider>
+    );
 
-    // Check if error notification is shown
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText(/You're about to pay/)).toBeInTheDocument();
+
+
+    const termsCheckbox = screen.getByLabelText('Terms and conditions');
+    const personalDataCheckbox = screen.getByLabelText('Personal data authorization');
+    fireEvent.click(termsCheckbox);
+    fireEvent.click(personalDataCheckbox);
+
+    const form = screen.getByRole('form');
+    fireEvent.submit(form);
+
     await waitFor(() => {
-      expect(screen.getByText('All fields are required')).toBeInTheDocument();
-    });
+      const state = store.getState();
+      const notifications = state.notifications.notifications;
+      expect(notifications.length).toBeGreaterThan(0);
+      expect(notifications[0].message).toBe('All fields are required');
+    }, { timeout: 3000 });
   });
 
-  it('validates card number using Luhn algorithm', async () => {
-    renderComponent();
-    
-    // Fill in a valid card number
+  it('validates card number using Luhn algorithm - valid case', async () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <ProcessCardInfo {...defaultProps} />
+      </Provider>
+    );
+
+    const emailInput = screen.getByLabelText('Email');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
     const cardNumberInput = screen.getByPlaceholderText('1234 5678 9101 1123');
     fireEvent.change(cardNumberInput, { target: { value: '4532015112830366' } });
 
-    // Fill in other required fields
     const cardHolderInput = screen.getByLabelText('Card holder');
     fireEvent.change(cardHolderInput, { target: { value: 'John Doe' } });
 
@@ -123,7 +186,6 @@ describe('ProcessCardInfo Component', () => {
     const cvvInput = screen.getByPlaceholderText('CVV');
     fireEvent.change(cvvInput, { target: { value: '123' } });
 
-    // Fill in address fields
     const zipInput = screen.getByPlaceholderText('00000');
     fireEvent.change(zipInput, { target: { value: '12345' } });
 
@@ -139,18 +201,79 @@ describe('ProcessCardInfo Component', () => {
     const countryInput = screen.getByLabelText('Country');
     fireEvent.change(countryInput, { target: { value: 'USA' } });
 
-    // Check privacy checkboxes
-    const checkboxes = screen.getAllByRole('checkbox');
-    checkboxes.forEach(checkbox => {
-      fireEvent.click(checkbox);
-    });
+    const termsCheckbox = screen.getByLabelText('Terms and conditions');
+    const personalDataCheckbox = screen.getByLabelText('Personal data authorization');
+    fireEvent.click(termsCheckbox);
+    fireEvent.click(personalDataCheckbox);
 
-    const submitButton = screen.getByText(/Pay \$110.00/);
-    fireEvent.click(submitButton);
+    const form = screen.getByRole('form');
+    fireEvent.submit(form);
 
-    // The form should submit successfully with valid card number
+
     await waitFor(() => {
-      expect(screen.queryByText('The card is invalid!')).not.toBeInTheDocument();
-    });
+      const state = store.getState();
+      const notifications = state.notifications.notifications;
+      const hasInvalidCardNotification = notifications.some(
+        n => n.message === 'The card is invalid!'
+      );
+      expect(hasInvalidCardNotification).toBe(false);
+    }, { timeout: 3000 });
   });
-}); 
+  
+  it('validates card number using Luhn algorithm - invalid case', async () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <ProcessCardInfo {...defaultProps} />
+      </Provider>
+    );
+
+    const emailInput = screen.getByLabelText('Email');
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+
+    const cardNumberInput = screen.getByPlaceholderText('1234 5678 9101 1123');
+    fireEvent.change(cardNumberInput, { target: { value: '1234567890123456' } });
+
+    const cardHolderInput = screen.getByLabelText('Card holder');
+    fireEvent.change(cardHolderInput, { target: { value: 'John Doe' } });
+
+    const dateInput = screen.getByPlaceholderText('09/29');
+    fireEvent.change(dateInput, { target: { value: '12/25' } });
+
+    const cvvInput = screen.getByPlaceholderText('CVV');
+    fireEvent.change(cvvInput, { target: { value: '123' } });
+
+    const zipInput = screen.getByPlaceholderText('00000');
+    fireEvent.change(zipInput, { target: { value: '12345' } });
+
+    const streetInput = screen.getByPlaceholderText('Street, Apartment...');
+    fireEvent.change(streetInput, { target: { value: '123 Main St' } });
+
+    const cityInput = screen.getByLabelText('City');
+    fireEvent.change(cityInput, { target: { value: 'New York' } });
+
+    const stateInput = screen.getByLabelText('State');
+    fireEvent.change(stateInput, { target: { value: 'NY' } });
+
+    const countryInput = screen.getByLabelText('Country');
+    fireEvent.change(countryInput, { target: { value: 'USA' } });
+
+
+    const termsCheckbox = screen.getByLabelText('Terms and conditions');
+    const personalDataCheckbox = screen.getByLabelText('Personal data authorization');
+    fireEvent.click(termsCheckbox);
+    fireEvent.click(personalDataCheckbox);
+
+    const form = screen.getByRole('form');
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      const state = store.getState();
+      const notifications = state.notifications.notifications;
+      const hasInvalidCardNotification = notifications.some(
+        n => n.message === 'The card is invalid!'
+      );
+      expect(hasInvalidCardNotification).toBe(true);
+    }, { timeout: 3000 });
+  });
+});
