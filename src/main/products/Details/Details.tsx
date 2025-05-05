@@ -14,6 +14,9 @@ export default function ProductDetails() {
     const { productMemory } = useSelector((state: RootState) => state.products)
 
     const [product, setProduct] = useState<Product>(productMemory)
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+
+    const fee = (product.price ? product.price / 100 : 0).toFixed(2)
 
     useEffect(() => {
         if (productMemory.id !== '') uCookies.setCookie('productMemory', JSON.stringify(productMemory))
@@ -34,7 +37,7 @@ export default function ProductDetails() {
                     <div className='product-amount'>
                         <div>
                             <p>Fee</p>
-                            <span>USD {(product.price ? product.price / 100 : 0).toFixed(2)}</span>
+                            <span>USD {fee}</span>
                         </div>
 
                         <div>
@@ -46,11 +49,13 @@ export default function ProductDetails() {
 
                 <div className='product-details-payment'>
                     <p>Payments method available.</p>
-                    <Button>Pay with credit card</Button>
+                    <Button className='request-payment-button'
+                    onClick={() => {setIsOpen(true)}}
+                    >Pay with credit card</Button>
                 </div>
             </article>
 
-            <ProcessCardInfo />
+            <ProcessCardInfo item={product} setIsOpen={setIsOpen} isOpen={isOpen} fee={parseFloat(fee)}/>
         </AuthenticatedLayout>
     )
 }

@@ -1,0 +1,17 @@
+/* ToastContainer.css */
+.toast-container {
+    position: fixed; /* Fijo en la pantalla */
+    top: 1rem;       /* Espacio desde arriba */
+    right: 1rem;     /* Espacio desde la derecha (o usa left/transform para centrar arriba) */
+    /* Para centrar arriba: */
+    /* left: 50%; */
+    /* transform: translateX(-50%); */
+    /* align-items: center; */ /* Si centras horizontalmente */
+
+    z-index: 9999;   /* Asegura que esté por encima de casi todo */
+    display: flex;
+    flex-direction: column; /* Apila verticalmente */
+    align-items: flex-end; /* Alinea las notificaciones a la derecha (o 'center' si está centrado) */
+    width: fit-content; /* Ajusta el ancho al contenido */
+    max-width: calc(100% - 2rem); /* Evita que toque los bordes */
+}

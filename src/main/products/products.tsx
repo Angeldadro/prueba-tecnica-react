@@ -11,9 +11,7 @@ export default function ProductsUser() {
     const dispatcher: AppDispatch = useDispatch(); 
 
     const getProductData = async () => {
-        if (status === 'idle' && items.length === 0) {
-            await dispatcher(fetchProducts())
-        }
+        await dispatcher(fetchProducts())
     }
 
     useEffect(() => {

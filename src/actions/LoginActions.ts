@@ -5,14 +5,15 @@ import { IUserData } from '../types/types';
 
 // service
 import { AuthService } from '../services/Auth/AuthService';
+import { uCookies } from '../shared/services/cookies';
 
 const LoginActions = {
-  async attemptLogin(email: string, password: string): Promise<void> {
+  async attemptLogin(email: string, password: string, nav: any): Promise<void> {
     AppDispatcher.dispatch({
       type: LOGIN_ATTEMPT,
     });
 
-    const response = await AuthService.login(email, password)
+    const response = await AuthService.login(email, password, nav)
     if (response?.data) this.loginSuccess(response.data)
     if (response?.error) this.loginFailure(response.error)
   },
@@ -22,7 +23,8 @@ const LoginActions = {
       type: LOGIN_SUCCESS,
       payload: userData,
     });
-
+    
+    uCookies.setCookie('AuthToken', userData.access_token)
   },
   
   loginFailure(errorMessage: string): void {

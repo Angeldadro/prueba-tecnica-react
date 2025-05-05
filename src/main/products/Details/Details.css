@@ -54,3 +54,23 @@
     display: grid;
     gap: calc(var(--default-gap) / 2);
 }
+
+@media (max-width: 1068px) {
+    .p-all {
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .product-details-info {
+        width: 100%;
+    }
+
+    .product-details-payment {
+        width: 100%;
+    }
+
+    #desc-product {
+        max-width: 100%;
+    }
+}

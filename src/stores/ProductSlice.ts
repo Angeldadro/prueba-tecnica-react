@@ -39,7 +39,8 @@ export const fetchProducts = createAsyncThunk<
                 method: 'GET',      
                 headers: {
                     'Authorization': `Bearer ${token}`
-                }
+                },
+                convertJson: true
             }
         });
 

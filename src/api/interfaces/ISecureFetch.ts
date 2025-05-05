@@ -8,5 +8,6 @@ export interface SecureFetchType {
         body?: any,
         signal?: AbortSignal,
         stringifyBody?: boolean;
+        convertJson?: boolean; 
     }
 }

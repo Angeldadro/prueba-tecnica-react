@@ -16,11 +16,15 @@ export const secureFetch = async ({ options }: SecureFetchType): Promise<{ data:
         if (!res.ok) {
             const error = await res.json()
             console.log(error)
-            throw new Error(error || `Error | Server has responded with a exit code ${res.status}`)
+            throw new Error(error.message || `Error | Server has responded with a exit code ${res.status}`)
         }
 
-        const data = await res.json()
-        return { data: data, error: null } 
+        if (options.convertJson) {
+            const data = await res.json()
+            return { data: data, error: null } 
+        }
+
+        return { data: res.statusText, error: null }
     } catch (error: any) {
         return { error: error.message, data: null }
     }

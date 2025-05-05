@@ -48,7 +48,7 @@ export default function CardProduct({ item, state }: { item: Product[], state: b
     return (
         <div className="products-card">
         {!state ? item.map((item) => (
-            <CardDetails item={item}/>
+            <CardDetails key={item.id} item={item}/>
             )) : 'Loading...'
         }
         </div>

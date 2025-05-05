@@ -2,7 +2,7 @@ import { secureFetch } from "../../api/secureFetch"
 import { API_URL } from "../../config/test.config"
 
 export const AuthService = {
-    async login(email: string, password: string): Promise<{ error: string | null, data: any  } | null> {
+    async login(email: string, password: string, nav: any): Promise<{ error: string | null, data: any  } | null> {
         const { error, data } = await secureFetch({ options: {
             url: `${API_URL}/auth/login`,
             method: 'POST',
@@ -13,15 +13,19 @@ export const AuthService = {
                 email: email.trim(),
                 password: password.trim()
             },
-            stringifyBody: true
+            stringifyBody: true,
+            convertJson: true
             // --pendiente hacer la signal para cancelar peticiones cuando se desmonte el componente.
         }})
-
-        if (data) return { data: data, error: null }
+        
+        if (data) {
+            nav('/dashboard')
+            return { error: null, data: data }
+        }
         if (error) return { error: error, data: null }
         return null
     },
-
+    
     async register(email: string, password: string): Promise<{ error: string | null, data: any  } | null> {
         const { error, data } = await secureFetch({ options: {
             url: `${API_URL}/auth/register`,
@@ -33,7 +37,8 @@ export const AuthService = {
                 email: email.trim(),
                 password: password.trim()
             },
-            stringifyBody: true
+            stringifyBody: true,
+            convertJson: true
             // --pendiente hacer la signal para cancelar peticiones cuando se desmonte el componente.
         }})
 

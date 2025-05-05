@@ -15,7 +15,7 @@ export default function Button({ children, onClick, type, className, disabled, t
         <button
         type={type || "button"}
             className={`${themeClass} ${className}`}
-            onClick={onClick}
+            onClick={disabled ? () => {} : onClick}
             disabled={disabled}
             style={disabled ? { cursor: "not-allowed" } : {}}
         >

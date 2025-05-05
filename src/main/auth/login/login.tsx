@@ -8,29 +8,24 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginStore from "../../../stores/LoginStores";
 // Actions
 import LoginActions from "../../../actions/LoginActions";
+import { AppDispatch } from "../../../stores";
+import { useDispatch } from "react-redux";
+import { addNotificationWithTimeout } from "../../../stores/NotificationSlice";
 // interfaces
-import { IUserData } from "../../../types/types";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../stores";
 // actiosn redux
-import { setIsAuthenticated } from "../../../stores/AuthSlice";
-import { uCookies } from "../../../shared/services/cookies";
 
 export default function Login() {
     const [authData, setAuthData] = useState<{ email: string, password: string }>({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState<boolean>(LoginStore.isLoading());
     const [error, setError] = useState<string | null>(LoginStore.getError());
-    const [userData, setUserData] = useState<IUserData | null>(LoginStore.getUserData());
 
-    const isAuth = useSelector((state: RootState) => state.auth.IsAuthenticated)
-    const dispatch = useDispatch()
     // navigation
     const navigate = useNavigate()
-
+    const dispatcher: AppDispatch = useDispatch()
+ 
     const _onLoginStateChange = (): void => {
         setIsLoading(LoginStore.isLoading());
         setError(LoginStore.getError());
-        setUserData(LoginStore.getUserData());
     };
 
     useEffect(() => {
@@ -38,7 +33,7 @@ export default function Login() {
         return () => {
             LoginStore.removeChangeListener(_onLoginStateChange);
         };
-    }, []);
+    }, [LoginActions.attemptLogin, error]);
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setAuthData({ ...authData, email: e.target.value })
@@ -52,20 +47,16 @@ export default function Login() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-        await LoginActions.attemptLogin(authData.email, authData.password);
-        if (userData?.access_token) {
-            uCookies.setCookie('AuthToken', userData.access_token)
-            dispatch(setIsAuthenticated(true))
-            return
+        await LoginActions.attemptLogin(authData.email, authData.password, navigate);
+
+        if (error) {
+            dispatcher(addNotificationWithTimeout({
+                message: error,
+                type: 'error'
+            }))
         }
-        dispatch(setIsAuthenticated(false))
     };
 
-    useEffect(() => {
-        if (isAuth) {
-            navigate('/dashboard', { replace: true })
-        }
-    }, [error, isAuth])
 
 
     return (

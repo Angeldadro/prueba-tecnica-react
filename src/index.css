@@ -67,15 +67,23 @@ input {
 /* Loading indicator */
 
 .loading-spin {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border-top: 1px solid transparent;
-    border: 1px solid var(--background-color);
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+  border: 1px solid var(--dark-color);
+  border-top: 1px solid transparent;
+  animation: spin .6s linear infinite;
+  margin-bottom: 1rem;
 }
 
 @keyframes spin {
-  
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
 }
 
 /* Loading indicator */
