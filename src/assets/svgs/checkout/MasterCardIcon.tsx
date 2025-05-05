@@ -9,7 +9,7 @@ export default function MasterCardIcon() {
       ></g>
       <g id="SVGRepo_iconCarrier">
         {" "}
-        <g fill="none" fill-rule="evenodd">
+        <g fill="none" fillRule="evenodd">
           {" "}
           <circle cx="7" cy="12" r="7" fill="#EA001B"></circle>{" "}
           <circle
@@ -17,7 +17,7 @@ export default function MasterCardIcon() {
             cy="12"
             r="7"
             fill="#FFA200"
-            fill-opacity=".8"
+            fillOpacity=".8"
           ></circle>{" "}
         </g>{" "}
       </g>
